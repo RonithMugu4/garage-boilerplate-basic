@@ -3,7 +3,7 @@ import type { Request, Response, NextFunction } from 'express'
 import { z } from 'zod'
 import type { AuthenticatedRequest } from '../middleware/auth'
 import { HttpError } from '../lib/errors'
-import { adminDb } from '../lib/firebase'
+import { adminDb, Timestamp } from '../lib/firebase'
 
 const router: ExpressRouter = Router()
 
@@ -41,8 +41,9 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
       return next(HttpError.badRequest(parsed.error.errors[0]?.message ?? 'Invalid input'))
     }
 
+    const now = Timestamp.now()
     const ref = adminDb.collection('notes').doc()
-    await ref.set({ ...parsed.data, uid: user.uid, _schemaVersion: 1 })
+    await ref.set({ ...parsed.data, uid: user.uid, createdAt: now, updatedAt: now, _schemaVersion: 1 })
 
     res.status(201).json({ id: ref.id })
   } catch (err) {
