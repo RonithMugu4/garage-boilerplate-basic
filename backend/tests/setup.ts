@@ -8,6 +8,7 @@ vi.mock('../src/lib/firebase', () => ({
   adminApp: {},
   adminAuth: { verifyIdToken: vi.fn() },
   adminDb: { collection: vi.fn(), runTransaction: vi.fn() },
+  Timestamp: { now: vi.fn(() => ({ seconds: 0, nanoseconds: 0 })) },
 }))
 
 /**
